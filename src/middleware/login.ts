@@ -14,11 +14,10 @@ export default loginAuth.post("/", (req, res) => {
 
     const jsonData = JSON.stringify(data);
     const parsedJson = JSON.parse(jsonData);
-
+    // console.log(parsedJson);
     const signUPUser = parsedJson.filter(
       (user) => user.user_name == name && user.passwords == password
     );
-    // console.log(req.body);
 
     //if the login user is signedUp give him a token
     if (signUPUser.length > 0) {
@@ -36,6 +35,6 @@ export default loginAuth.post("/", (req, res) => {
       res.cookie("userToken", userToken).redirect("/home");
     } else res.json({ msg: "Please you have to Sign UP first" });
 
-    return res.end();
+    res.end();
   });
 });

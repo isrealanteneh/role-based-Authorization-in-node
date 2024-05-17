@@ -40,7 +40,7 @@ app.use("/login", loginAuth);
 
 app.use("/home", authUser, roleAuthorization("student"), homeRouter);
 
-app.use("/getme", authUser, roleAuthorization("student"), getMeRoute);
+app.use("/getme", getMeRoute); //  authUser, roleAuthorization("student"),
 
 app.use(
   "/getstudents",
