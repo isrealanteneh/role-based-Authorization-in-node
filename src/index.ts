@@ -8,8 +8,8 @@ import { studentData } from "./entity/studentTable";
 //importing routes
 import homeRouter from "./routes/home";
 import getMeRoute from "./routes/getme";
-import getStudentRouter from "./routes/getstudent";
-import getStudentGrade from "./routes/getstudentgrade";
+// import getStudentRouter from "./routes/getstudent";
+// import getStudentGrade from "./routes/getstudentgrade";
 
 //middleware
 import authUser from "../auth.middleware";
@@ -40,21 +40,21 @@ app.use("/login", loginAuth);
 
 app.use("/home", authUser, roleAuthorization("student"), homeRouter);
 
-app.use("/getme", getMeRoute); //  authUser, roleAuthorization("student"),
+app.use("/getme", authUser, roleAuthorization("student"), getMeRoute);
 
-app.use(
-  "/getstudents",
-  authUser,
-  roleAuthorization("director"),
-  getStudentRouter
-);
+// app.use(
+//   "/getstudents",
+//   authUser,
+//   roleAuthorization("director"),
+//   getStudentRouter
+// );
 
-app.use(
-  "/getstudentsgrade",
-  authUser,
-  roleAuthorization("director"),
-  getStudentGrade
-);
+// app.use(
+//   "/getstudentsgrade",
+//   // authUser,
+//   // roleAuthorization("director"),
+//   getStudentGrade
+// );
 
 app.listen(port, (): void => {
   console.log("Sever is runing on port ", port);
