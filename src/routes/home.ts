@@ -6,5 +6,4 @@ const homeRouter = express.Router();
 
 export default homeRouter.get("/", (req, res) => {
   res.json(" Welcome Home ");
-  res.end();
 });

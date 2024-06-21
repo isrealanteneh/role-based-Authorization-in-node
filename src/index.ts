@@ -7,7 +7,7 @@ import { studentData } from "./entity/studentTable";
 
 //importing routes
 import homeRouter from "./routes/home";
-import getMeRoute from "./routes/getme";
+import getMeRoute from "./routes/getmyinfo";
 // import getStudentRouter from "./routes/getstudent";
 // import getStudentGrade from "./routes/getstudentgrade";
 
@@ -38,24 +38,19 @@ app.use(express.json());
 
 app.use("/login", loginAuth);
 
-app.use("/home", authUser, roleAuthorization("student"), homeRouter);
-
-app.use("/getme", authUser, roleAuthorization("student"), getMeRoute);
-
-// app.use(
-//   "/getstudents",
-//   authUser,
-//   roleAuthorization("director"),
-//   getStudentRouter
-// );
-
-// app.use(
-//   "/getstudentsgrade",
-//   // authUser,
-//   // roleAuthorization("director"),
-//   getStudentGrade
-// );
-
+app.use(
+  "/home",
+  authUser,
+  roleAuthorization(["student", "teacher", "director"]),
+  homeRouter
+);
+app.use(
+  "/getme",
+  authUser,
+  authUser,
+  roleAuthorization(["student"]),
+  getMeRoute
+);
 app.listen(port, (): void => {
   console.log("Sever is runing on port ", port);
 });

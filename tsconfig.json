@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es5", "es6"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "types": ["node", "express"],
     "esModuleInterop": true,
     "target": "es6",

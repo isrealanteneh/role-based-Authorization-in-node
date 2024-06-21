@@ -2,6 +2,7 @@ import express, { response } from "express";
 import * as dotenv from "dotenv";
 import * as jwt from "jsonwebtoken";
 import { userData } from "../entity/userTable";
+import { getRepository } from "typeorm";
 const loginAuth = express.Router();
 
 //load the env variables from .env file to this
@@ -9,32 +10,35 @@ dotenv.config();
 
 //middleware for authentication
 export default loginAuth.post("/", (req, res) => {
-  userData.find().then((data) => {
-    const { name, password } = req.body;
-
-    const jsonData = JSON.stringify(data);
-    const parsedJson = JSON.parse(jsonData);
-    // console.log(parsedJson);
-    const signUPUser = parsedJson.filter(
-      (user) => user.user_name == name && user.passwords == password
-    );
-
-    //if the login user is signedUp give him a token
-    if (signUPUser.length > 0) {
-      // preparing token part of payload
-      let payload = signUPUser[0];
-      delete payload.password;
-
-      //preparing secret key
-      const secretKey = process.env.SECRET;
-
-      const option = { expiresIn: "1h" };
-
-      const userToken = jwt.sign(payload, secretKey, option);
-
-      res.cookie("userToken", userToken).redirect("/home");
-    } else res.json({ msg: "Please you have to Sign UP first" });
-
-    res.end();
-  });
+  const { name, password } = req.body;
+  if (name == null || password == null)
+    return res
+      .status(402)
+      .json({ error: " please inter your name and password" });
+  else {
+    // find data from data base as promise and resolve it
+    const userRepo = getRepository(userData);
+    const findData = userRepo
+      .find({
+        where: { user_name: name, passwords: password },
+      })
+      .then((data) => {
+        if (data.length > 0) {
+          // make a new object that used as payload data
+          let my_obj = {
+            id: data[0].user_id,
+            name: data[0].user_name,
+            roles: data[0].roles,
+          };
+          const payload = my_obj;
+          const expireTime = { expiresIn: "1h" };
+          const token = jwt.sign(payload, process.env.SECRET, expireTime);
+          res.cookie("Token data", token).json("Successfully Loggin ");
+          res.end();
+        } else {
+          res.send("User not found ");
+        }
+      })
+      .catch((error) => res.json({ msg: error }));
+  }
 });

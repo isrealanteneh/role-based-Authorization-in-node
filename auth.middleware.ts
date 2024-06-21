@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-export default function authUser(
+export default async function authUser(
   req: Request,
   res: Response,
   next: NextFunction
@@ -13,19 +13,18 @@ export default function authUser(
   try {
     const cookieData = req.headers.cookie;
     const extractToken = cookieData.split("=")[1];
-    const verifyUser = jwt.verify(
+    const verifyUser = await jwt.verify(
       extractToken,
       process.env.SECRET,
-      (err, response): void => {
+      (err, response) => {
         if (err) {
-          res.json("please sign up first");
+          return res.json("please sign up first");
         } else {
           next();
         }
       }
     );
   } catch (err) {
-    res.json(" Please login first ");
+    return res.json(" Please login first ");
   }
-  return res.end();
 }
